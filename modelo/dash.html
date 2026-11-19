@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>{{NOME}} · Relatório de desempenho</title>
+<style>
+:root { --bg: #0c0c0c; --panel: #161616; --panel2: #1d1d1d; --line: #262626; --edge: #27504c; --fg: #f2f2f2; --muted: #9b9b9b; --dim: #6f6f6f; --ok: #3ddc84; --okbg: rgba(61, 220, 132, .14); --bad: #ff6b6b; --badbg: rgba(255, 107, 107, .15); color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: Inter, "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif; }
+.mf { max-width: 1480px; margin: 0 auto; padding: 28px max(16px, env(safe-area-inset-right, 0px)) 36px max(16px, env(safe-area-inset-left, 0px)); display: flex; flex-direction: column; gap: 16px; }
+@media (min-width: 900px) { .mf { padding-left: 40px; padding-right: 40px; } }
+.mf-head { display: flex; flex-direction: column; gap: 4px; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
+.mf-eyebrow { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 0; font-weight: 600; }
+.mf-brand { font-size: 22px; font-weight: 700; margin: 0; letter-spacing: .01em; }
+.mf-dates { font-size: 13px; color: var(--muted); margin: 0; font-variant-numeric: tabular-nums; }
+.mf-section { display: flex; flex-direction: column; gap: 14px; }
+.mf-plat { display: flex; align-items: center; gap: 14px; margin: 10px 0 4px; }
+.mf-icon { width: 42px; height: 42px; border-radius: 10px; background: #202020; display: flex; align-items: center; justify-content: center; flex: none; }
+.mf-icon svg { width: 26px; height: 26px; }
+.mf-plat-name { font-size: 20px; font-weight: 700; margin: 0; }
+.mf-plat-sub { font-size: 13px; color: var(--muted); margin: 2px 0 0; overflow-wrap: anywhere; }
+.mf-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; }
+.mf-card { background: var(--panel); border: 1px solid var(--edge); border-radius: 12px; box-shadow: inset 0 1px 0 rgba(62, 207, 207, .10), 0 0 18px rgba(62, 207, 207, .04); min-width: 0; }
+.mf-kpi { padding: 18px 14px 16px; display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
+.mf-kpi-lbl { font-size: 13px; font-weight: 600; margin: 0; display: flex; align-items: center; gap: 6px; }
+.mf-q { display: inline-flex; width: 12px; height: 12px; border: 1px solid var(--dim); border-radius: 50%; font-size: 8px; color: var(--dim); align-items: center; justify-content: center; line-height: 1; cursor: help; }
+.mf-kpi-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.mf-kpi-val { font-size: 26px; font-weight: 700; margin: 0; font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+.mf-pill { font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 6px; background: #262626; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.mf-pill.is-good { background: var(--okbg); color: var(--ok); }
+.mf-pill.is-bad { background: var(--badbg); color: var(--bad); }
+.mf-prev { font-size: 12px; color: var(--muted); margin: 0; font-variant-numeric: tabular-nums; }
+.mf-box { padding: 14px 18px 16px; display: flex; flex-direction: column; gap: 10px; }
+.mf-box-title { font-size: 13px; font-weight: 600; text-align: center; margin: 0; display: flex; justify-content: center; align-items: center; gap: 6px; }
+.mf-chart { position: relative; min-height: 210px; }
+.mf-chart svg, .mf-funnel svg { display: block; overflow: visible; }
+.mf-chart text { fill: #8a8a8a; font-size: 10px; font-family: inherit; }
+.mf-gridline { stroke: #262626; }
+.mf-tip { position: absolute; pointer-events: none; background: #222; border: 1px solid #333; box-shadow: 0 6px 18px rgba(0, 0, 0, .5); border-radius: 8px; padding: 6px 9px; font-size: 12px; white-space: nowrap; color: var(--fg); z-index: 3; font-variant-numeric: tabular-nums; }
+.mf-funnel-labels { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; padding: 0 4px; }
+.mf-fl { display: flex; flex-direction: column; gap: 1px; font-size: 11px; color: var(--muted); min-width: 0; }
+.mf-fl-name { display: flex; align-items: center; gap: 5px; }
+.mf-dot { width: 7px; height: 7px; border-radius: 2px; display: inline-block; flex: none; }
+.mf-fl-val { font-size: 13px; font-weight: 700; color: var(--fg); font-variant-numeric: tabular-nums; }
+.mf-fl-rates { font-variant-numeric: tabular-nums; }
+.mf-fl-rates b { color: var(--fg); font-weight: 600; }
+.mf-ant { color: #3ecfcf; margin-left: 6px; }
+.mf-ant b { color: #3ecfcf; }
+.mf-funnel { position: relative; min-height: 140px; }
+.mf-funnel text { font-size: 10px; font-weight: 600; fill: #fff; font-family: inherit; }
+.mf-tablewrap { overflow: auto; max-height: 380px; border: 1px solid var(--line); border-radius: 8px; }
+.mf-table { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
+.mf-table th { position: sticky; top: 0; background: var(--panel2); color: var(--muted); font-weight: 500; text-align: right; padding: 9px 12px; white-space: nowrap; z-index: 1; }
+.mf-table th:first-child, .mf-table td:first-child { text-align: left; }
+.mf-table td { padding: 8px 12px; text-align: right; white-space: nowrap; border-top: 1px solid #1f1f1f; }
+.mf-table tbody tr:nth-child(even) td { background: #191919; }
+.mf-table td.mf-camp { font-weight: 600; white-space: normal; min-width: 240px; }
+.mf-table tr.mf-total td { font-weight: 700; background: var(--panel2); font-size: 12px; }
+.mf-st { display: inline-block; margin-left: 8px; font-size: 11px; font-weight: 600; padding: 1px 7px; border-radius: 6px; background: #262626; color: var(--muted); }
+.mf-st.is-on { background: var(--okbg); color: var(--ok); }
+.mf-two { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 14px; }
+.mf-pie { display: flex; align-items: center; justify-content: center; gap: 28px; flex-wrap: wrap; min-height: 180px; }
+.mf-pie svg { width: 150px; height: 150px; flex: none; }
+.mf-legend { display: flex; flex-direction: column; gap: 3px; font-size: 11px; color: var(--muted); min-width: 0; }
+.mf-leg { display: flex; align-items: center; gap: 6px; }
+.mf-leg b { color: var(--fg); font-weight: 700; font-variant-numeric: tabular-nums; }
+.mf-sep { height: 8px; background: #1a1a1a; margin: 18px 0 4px; border-radius: 4px; }
+.mf-foot { font-size: 11px; color: var(--dim); margin: 0; line-height: 1.5; }
+.mf-msg { padding: 28px 18px; text-align: center; color: var(--muted); font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="mf">
+
+<header class="mf-head">
+<p class="mf-eyebrow">Relatório de desempenho</p>
+<h1 class="mf-brand">{{NOME}}</h1>
+<p class="mf-dates" id="periodo">—</p>
+</header>
+
+<section class="mf-section" id="meta">
+<div class="mf-plat">
+<div class="mf-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.4 7.6c-2.3 0-3.9 2.4-3.9 4.6 0 2 1.2 3.9 3.3 3.9 2.6 0 4.2-3.3 6.2-6.2 1.6-2.3 2.8-2.9 4-2.9 2 0 3.5 2.1 3.5 4.9 0 2.4-1.2 4.2-3.1 4.2-2.4 0-4.2-3.7-6.4-6.6C8.8 8 7.7 7.6 6.4 7.6z" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"/></svg></div>
+<div><h2 class="mf-plat-name">Meta Ads</h2><p class="mf-plat-sub" id="m-conta">—</p></div>
+</div>
+<div id="meta-corpo"></div>
+</section>
+
+<div id="google-bloco" hidden>
+<div class="mf-sep"></div>
+<section class="mf-section" id="google">
+<div class="mf-plat">
+<div class="mf-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="12.6" y="2.2" width="5" height="17.5" rx="2.5" transform="rotate(-30 15.1 11)" fill="#fff"/><circle cx="5.8" cy="17.9" r="2.6" fill="#fff"/><rect x="6.4" y="2.2" width="5" height="12" rx="2.5" transform="rotate(30 8.9 8.2)" fill="#fff" opacity=".85"/></svg></div>
+<div><h2 class="mf-plat-name">Google Ads</h2><p class="mf-plat-sub" id="g-conta">—</p></div>
+</div>
+<div id="google-corpo"></div>
+</section>
+</div>
+
+<p class="mf-foot" id="rodape">—</p>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+(function () {
+  const BRL = new Intl.NumberFormat('pt-BR', {style: 'currency', currency: 'BRL'});
+  const DEC2 = new Intl.NumberFormat('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  const AUTO = new Intl.NumberFormat('pt-BR', {maximumFractionDigits: 2});
+  const INT = new Intl.NumberFormat('pt-BR', {maximumFractionDigits: 0});
+  const money = (v) => (v == null ? '—' : BRL.format(v));
+  const count = (v) => (v == null ? '—' : AUTO.format(v));
+  const prevMoney = (v) => (v == null ? '—' : DEC2.format(v));
+  const rate = (v) => (v == null ? '—' : AUTO.format(v) + '%');
+  const br = (s) => s.slice(8, 10) + '/' + s.slice(5, 7) + '/' + s.slice(0, 4);
+  const parseDay = d3.utcParse('%Y-%m-%d');
+  const fmtDay = d3.utcFormat('%d/%m');
+  const COLORS = ['#3ecfcf', '#4f9cf0', '#a77ee8', '#f2a84b', '#5cc46e', '#e86a9a', '#6c7ae0', '#9aa0a6', '#3fb6a8', '#d98e5f'];
+  const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+  const round = (p) => (p == null ? null : p < 1 ? Math.round(p * 100) / 100 : p < 10 ? Math.round(p * 10) / 10 : Math.round(p));
+  const variacao = (a, b) => (a != null && b ? Math.round((a / b - 1) * 1000) / 10 : null);
+  const POS = {
+    'instagram|instagram_stories': 'Instagram — Stories', 'instagram|instagram_reels': 'Instagram — Reels', 'instagram|feed': 'Instagram — Feed',
+    'instagram|instagram_explore_grid_home': 'Instagram — Explorar', 'instagram|instagram_explore': 'Instagram — Explorar', 'instagram|instagram_profile_feed': 'Instagram — Perfil',
+    'facebook|feed': 'Facebook — Feed', 'facebook|facebook_reels': 'Facebook — Reels', 'facebook|facebook_reels_overlay': 'Facebook — Reels (sobreposição)',
+    'facebook|facebook_notification': 'Facebook — Notificação', 'facebook|facebook_stories': 'Facebook — Stories', 'facebook|marketplace': 'Facebook — Marketplace'
+  };
+
+  function kpi(label, help, valor, fmt, anterior, prevFmt, bom) {
+    const card = el('div', 'mf-card mf-kpi');
+    const lbl = el('p', 'mf-kpi-lbl', label + ' ');
+    const q = el('span', 'mf-q', '?'); q.title = help; lbl.appendChild(q);
+    const row = el('div', 'mf-kpi-row');
+    row.appendChild(el('p', 'mf-kpi-val', fmt(valor)));
+    const v = variacao(valor, anterior);
+    const pill = el('span', 'mf-pill', v == null ? '—' : (v >= 0 ? '▲ +' : '▼ ') + v.toLocaleString('pt-BR', {minimumFractionDigits: 1, maximumFractionDigits: 1}) + '%');
+    const dir = v == null ? 0 : Math.sign(v) * bom;
+    if (dir > 0) pill.classList.add('is-good');
+    if (dir < 0) pill.classList.add('is-bad');
+    row.appendChild(pill);
+    card.append(lbl, row, el('p', 'mf-prev', prevFmt(anterior) + ' no período anterior'));
+    return card;
+  }
+
+  function funil(etapas) {
+    const box = el('div', 'mf-card mf-box');
+    box.appendChild(el('p', 'mf-box-title', 'Funil de resultados'));
+    const labels = el('div', 'mf-funnel-labels');
+    const cores = ['#3ecfcf', '#4f9cf0', '#a77ee8'];
+    const imp = etapas[0].valor;
+    etapas.forEach((e, i) => {
+      const c = el('div', 'mf-fl');
+      const nm = el('span', 'mf-fl-name'); const dot = el('i', 'mf-dot'); dot.style.background = cores[i]; nm.append(dot, document.createTextNode(e.nome));
+      const rates = el('span', 'mf-fl-rates');
+      const topo = i === 0 ? 100 : (imp ? round(e.valor / imp * 100) : null);
+      rates.append(document.createTextNode('topo '), el('b', null, rate(topo)));
+      if (i > 0) {
+        const ant = el('span', 'mf-ant'); const prev = etapas[i - 1].valor;
+        e.anterior = prev ? round(e.valor / prev * 100) : null;
+        ant.append(document.createTextNode('anterior '), el('b', null, rate(e.anterior)));
+        rates.appendChild(ant);
+      }
+      c.append(nm, el('span', 'mf-fl-val', count(e.valor)), rates);
+      labels.appendChild(c);
+    });
+    const area = el('div', 'mf-funnel');
+    box.append(labels, area);
+    box._draw = () => {
+      area.replaceChildren();
+      const W = Math.max(260, area.clientWidth || 600), H = 140, mid = H / 2;
+      const h0 = H - 12, h1 = h0 * 0.28, h2 = h0 * 0.1, x1 = W / 3, x2 = W * 2 / 3;
+      const svg = d3.select(area).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'Funil de resultados');
+      const band = (xa, xb, ha, hb) => { const m = (xa + xb) / 2; return `M${xa},${mid - ha / 2} C${m},${mid - ha / 2} ${m},${mid - hb / 2} ${xb},${mid - hb / 2} L${xb},${mid + hb / 2} C${m},${mid + hb / 2} ${m},${mid + ha / 2} ${xa},${mid + ha / 2} Z`; };
+      svg.append('path').attr('d', band(0, x1, h0, h1)).style('fill', cores[0]);
+      svg.append('path').attr('d', band(x1, x2, h1, h2)).style('fill', cores[1]);
+      svg.append('rect').attr('x', x2).attr('y', mid - h2 / 2).attr('width', W - x2).attr('height', h2).style('fill', cores[2]);
+      [[x1, etapas[1].anterior], [x2, etapas[2].anterior]].forEach(([x, v]) => {
+        const g = svg.append('g');
+        const t = g.append('text').attr('x', x).attr('y', mid).attr('dy', '0.35em').attr('text-anchor', 'middle').text(rate(v));
+        const w = Math.max(30, t.node().getComputedTextLength() + 14);
+        g.insert('rect', 'text').attr('x', x - w / 2).attr('y', mid - 9).attr('width', w).attr('height', 18).attr('rx', 9).style('fill', '#111').style('stroke', '#333');
+      });
+    };
+    return box;
+  }
+
+  function grafico(titulo, help, linhas, campo, tipo, fullFmt) {
+    const box = el('div', 'mf-card mf-box');
+    const t = el('p', 'mf-box-title', titulo + ' ');
+    const q = el('span', 'mf-q', '?'); q.title = help; t.appendChild(q);
+    const area = el('div', 'mf-chart');
+    box.append(t, area);
+    box._draw = () => {
+      area.replaceChildren();
+      const rows = linhas.map((r) => ({day: parseDay(r.data), v: Number(r[campo]) || 0})).filter((r) => r.day);
+      if (!rows.length) { area.appendChild(el('p', 'mf-msg', 'Sem dados no período.')); return; }
+      const W = Math.max(240, area.clientWidth || 600), H = 210, mt = 10, mb = 40, mr = 8;
+      const y = d3.scaleLinear().domain([0, d3.max(rows, (r) => r.v) || 1]).nice().range([H - mb, mt]);
+      const ticks = y.ticks(4);
+      const svg = d3.select(area).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', titulo + ' por dia');
+      const probe = svg.append('g'); let ml = 0;
+      probe.selectAll('text').data(ticks).join('text').text((v) => INT.format(v)).each(function () { ml = Math.max(ml, this.getComputedTextLength()); });
+      probe.remove(); ml = Math.ceil(ml) + 10;
+      const x = d3.scaleBand().domain(rows.map((r) => +r.day)).range([ml, W - mr]).padding(tipo === 'bar' ? 0.2 : 0);
+      const cx = (r) => x(+r.day) + x.bandwidth() / 2;
+      svg.append('g').selectAll('line').data(ticks).join('line').attr('class', 'mf-gridline').attr('x1', ml).attr('x2', W - mr).attr('y1', (v) => y(v)).attr('y2', (v) => y(v));
+      svg.append('g').selectAll('text').data(ticks).join('text').attr('x', ml - 8).attr('y', (v) => y(v)).attr('dy', '0.32em').attr('text-anchor', 'end').text((v) => INT.format(v));
+      const step = Math.max(1, Math.ceil(rows.length * 26 / Math.max(1, W - ml - mr)));
+      svg.append('g').selectAll('text').data(rows.filter((r, i) => i % step === 0)).join('text')
+        .attr('transform', (r) => `translate(${cx(r)},${H - mb + 12}) rotate(-45)`).attr('text-anchor', 'end').text((r) => fmtDay(r.day));
+      if (tipo === 'bar') {
+        svg.append('g').selectAll('rect').data(rows).join('rect').attr('x', (r) => x(+r.day)).attr('width', x.bandwidth()).attr('y', (r) => y(r.v)).attr('height', (r) => Math.max(0, y(0) - y(r.v))).attr('rx', 2).style('fill', '#3ecfcf');
+      } else {
+        const gid = 'g' + Math.random().toString(36).slice(2, 8);
+        const grad = svg.append('defs').append('linearGradient').attr('id', gid).attr('x1', 0).attr('x2', 0).attr('y1', 0).attr('y2', 1);
+        grad.append('stop').attr('offset', '0%').style('stop-color', '#3ecfcf').style('stop-opacity', 0.28);
+        grad.append('stop').attr('offset', '100%').style('stop-color', '#3ecfcf').style('stop-opacity', 0.02);
+        svg.append('path').datum(rows).attr('d', d3.area().curve(d3.curveMonotoneX).x(cx).y0(y(0)).y1((r) => y(r.v))).style('fill', `url(#${gid})`);
+        svg.append('path').datum(rows).attr('d', d3.line().curve(d3.curveMonotoneX).x(cx).y((r) => y(r.v))).style('fill', 'none').style('stroke', '#3ecfcf').style('stroke-width', 2);
+      }
+      svg.append('line').attr('x1', ml).attr('x2', W - mr).attr('y1', y(0)).attr('y2', y(0)).style('stroke', '#333');
+      const tip = el('div', 'mf-tip'); tip.hidden = true; area.appendChild(tip);
+      const dot = svg.append('circle').attr('r', 4).style('fill', '#3ecfcf').style('stroke', '#0c0c0c').style('stroke-width', 2).style('display', 'none');
+      const show = (r) => {
+        tip.textContent = fmtDay(r.day) + ': ' + fullFmt(r.v); tip.hidden = false;
+        if (tipo !== 'bar') dot.style('display', null).attr('cx', cx(r)).attr('cy', y(r.v));
+        const b = area.getBoundingClientRect(); const px = cx(r) / W * b.width; const tw = tip.offsetWidth;
+        tip.style.left = Math.min(Math.max(0, px - tw / 2), Math.max(0, b.width - tw)) + 'px';
+        tip.style.top = Math.max(0, y(r.v) / H * b.height - 38) + 'px';
+      };
+      const sw = x.step();
+      svg.append('g').selectAll('rect').data(rows).join('rect').attr('x', (r) => cx(r) - sw / 2).attr('width', sw).attr('y', mt).attr('height', H - mb - mt).style('fill', 'transparent')
+        .on('pointerenter', (ev, r) => show(r)).on('pointermove', (ev, r) => show(r)).on('pointerdown', (ev, r) => show(r))
+        .on('pointerleave', () => { tip.hidden = true; dot.style('display', 'none'); });
+    };
+    return box;
+  }
+
+  function tabela(cols, linhas, total, nota) {
+    const box = el('div', 'mf-card mf-box');
+    box.appendChild(el('p', 'mf-box-title', 'Campanhas'));
+    const wrap = el('div', 'mf-tablewrap');
+    const tb = el('table', 'mf-table');
+    const hr = el('tr'); cols.forEach((c) => hr.appendChild(el('th', null, c.t)));
+    const thead = el('thead'); thead.appendChild(hr);
+    const body = el('tbody');
+    if (!linhas.length) { const tr = el('tr'); const td = el('td', 'mf-msg', 'Nenhuma campanha com gasto no período.'); td.colSpan = cols.length; tr.appendChild(td); body.appendChild(tr); }
+    linhas.forEach((r) => {
+      const tr = el('tr');
+      cols.forEach((c, i) => {
+        if (i === 0) {
+          const td = el('td', 'mf-camp'); td.appendChild(document.createTextNode(r[c.k]));
+          td.appendChild(el('span', 'mf-st' + (r.status === 'Ativo' ? ' is-on' : ''), r.status)); tr.appendChild(td);
+        } else tr.appendChild(el('td', null, c.f(r[c.k])));
+      });
+      body.appendChild(tr);
+    });
+    if (linhas.length) {
+      const tr = el('tr', 'mf-total'); tr.appendChild(el('td', null, 'TOTAL'));
+      cols.slice(1).forEach((c) => tr.appendChild(el('td', null, c.f(total[c.k])))); body.appendChild(tr);
+    }
+    tb.append(thead, body); wrap.appendChild(tb); box.appendChild(wrap);
+    if (nota) box.appendChild(el('p', 'mf-foot', nota));
+    return box;
+  }
+
+  function pizza(titulo, linhas, rotulo) {
+    const box = el('div', 'mf-card mf-box');
+    box.appendChild(el('p', 'mf-box-title', titulo));
+    const area = el('div', 'mf-pie'); box.appendChild(area);
+    const tot = linhas.reduce((a, r) => a + r.leads, 0);
+    if (!tot) { area.appendChild(el('p', 'mf-msg', 'Sem leads no período.')); return box; }
+    const R = 75;
+    const svg = d3.select(area).append('svg').attr('viewBox', `${-R} ${-R} ${2 * R} ${2 * R}`).attr('role', 'img').attr('aria-label', titulo);
+    svg.selectAll('path').data(d3.pie().sort(null).value((r) => r.leads)(linhas)).join('path').attr('d', d3.arc().innerRadius(0).outerRadius(R)).style('fill', (p, i) => COLORS[i % COLORS.length]).style('stroke', '#161616').style('stroke-width', 1);
+    const leg = el('div', 'mf-legend');
+    linhas.forEach((r, i) => {
+      const l = el('div', 'mf-leg'); const d = el('i', 'mf-dot'); d.style.background = COLORS[i % COLORS.length];
+      l.append(d, el('span', null, rotulo(r)), el('b', null, count(r.leads)), el('span', null, Math.round(r.leads / tot * 100) + '%'));
+      leg.appendChild(l);
+    });
+    area.appendChild(leg);
+    return box;
+  }
+
+  const desenhos = [];
+  function grade(filhos) { const g = el('div', 'mf-kpis'); filhos.forEach((f) => g.appendChild(f)); return g; }
+
+  function montarMeta(d) {
+    const corpo = document.getElementById('meta-corpo');
+    const m = d.meta || {};
+    if (m.erro || !m.atual) {
+      document.getElementById('m-conta').textContent = '—';
+      corpo.appendChild(el('div', 'mf-card mf-msg', 'Não foi possível ler o Meta agora. Os números voltam na próxima atualização.'));
+      return;
+    }
+    document.getElementById('m-conta').textContent = (m.conta_nome || '') + ' · ' + m.conta_id;
+    const a = m.atual, b = m.anterior;
+    corpo.appendChild(grade([
+      kpi('Gasto', 'Valor investido no período', a.gasto, money, b.gasto, prevMoney, 1),
+      kpi('Leads', 'Pessoas que enviaram o formulário do anúncio', a.leads, count, b.leads, count, 1),
+      kpi('Custo por lead', 'Gasto dividido pelos leads', a.cpl, money, b.cpl, prevMoney, -1),
+      kpi('CPC', 'Gasto dividido por todos os cliques no anúncio', a.cpc, money, b.cpc, prevMoney, -1)
+    ]));
+    const f = funil([{nome: 'Impressões', valor: a.impressoes}, {nome: 'Cliques no link', valor: a.cliques}, {nome: 'Leads', valor: a.leads}]);
+    const g1 = grafico('Gasto', 'Gasto por dia no mês', m.diario, 'gasto', 'area', money);
+    const g2 = grafico('Leads', 'Leads por dia no mês', m.diario, 'leads', 'bar', (v) => count(v) + ' leads');
+    corpo.append(f, g1, g2);
+    desenhos.push(f._draw, g1._draw, g2._draw);
+    corpo.appendChild(tabela([
+      {t: 'Campanha', k: 'nome'}, {t: 'Gasto ↓', k: 'gasto', f: money}, {t: 'Impressões', k: 'impressoes', f: count},
+      {t: 'Cliques', k: 'cliques', f: count}, {t: 'Leads', k: 'leads', f: (v) => (v ? count(v) : '—')}, {t: 'Custo por lead', k: 'cpl', f: money}
+    ], m.campanhas, a, d.notas && d.notas.campanhas));
+    const dois = el('div', 'mf-two');
+    dois.append(pizza('Idade Leads', m.idade, (r) => r.faixa),
+      pizza('Posicionamento', m.posicionamento, (r) => POS[r.plataforma + '|' + r.posicao] || (r.plataforma + ' — ' + String(r.posicao).replace(/_/g, ' '))));
+    corpo.appendChild(dois);
+  }
+
+  function montarGoogle(d) {
+    const g = d.google;
+    if (!g) return;
+    document.getElementById('google-bloco').hidden = false;
+    const corpo = document.getElementById('google-corpo');
+    if (g.sem_dados) {
+      document.getElementById('g-conta').textContent = '—';
+      corpo.appendChild(el('div', 'mf-card mf-msg', 'Os números do Google aparecem depois que o script da conta do Google Ads rodar.'));
+      return;
+    }
+    document.getElementById('g-conta').textContent = g.contas.join(' + ');
+    const a = g.atual, b = g.anterior;
+    corpo.appendChild(grade([
+      kpi('Gasto', 'Valor investido no período', a.gasto, money, b.gasto, prevMoney, 1),
+      kpi('Conversões', 'Conversões que a conta do Google Ads registra', a.conversoes, count, b.conversoes, count, 1),
+      kpi('Custo por conversão', 'Gasto dividido pelas conversões', a.cpa, money, b.cpa, prevMoney, -1),
+      kpi('CPC', 'Gasto dividido pelos cliques', a.cpc, money, b.cpc, prevMoney, -1)
+    ]));
+    const f = funil([{nome: 'Impressões', valor: a.impressoes}, {nome: 'Cliques', valor: a.cliques}, {nome: 'Conversões', valor: a.conversoes}]);
+    const g1 = grafico('Gasto', 'Gasto por dia no mês', g.diario, 'gasto', 'area', money);
+    corpo.append(f, g1);
+    desenhos.push(f._draw, g1._draw);
+    const at = g.atualizado ? ' Google atualizado em ' + g.atualizado.slice(8, 10) + '/' + g.atualizado.slice(5, 7) + ' às ' + g.atualizado.slice(11, 16) + '.' : '';
+    corpo.appendChild(tabela([
+      {t: 'Campanha', k: 'campanha'}, {t: 'Gasto ↓', k: 'gasto', f: money}, {t: 'Impressões', k: 'impressoes', f: count},
+      {t: 'Cliques', k: 'cliques', f: count}, {t: 'Conversões', k: 'conversoes', f: (v) => (v ? count(v) : '—')}
+    ], g.campanhas, a, ((d.notas && d.notas.conversoes) || '') + at));
+  }
+
+  function redesenhar() { desenhos.forEach((f) => { try { f(); } catch (e) { console.error(e); } }); }
+
+  fetch('data.json', {cache: 'no-store'}).then((r) => r.json()).then((d) => {
+    document.getElementById('periodo').textContent = br(d.periodo.inicio) + ' – ' + br(d.periodo.fim);
+    montarMeta(d);
+    montarGoogle(d);
+    document.getElementById('rodape').textContent = 'Do dia 1º até hoje, comparado aos mesmos dias antes do dia 1º (' + br(d.periodo.ant_inicio) + ' a ' + br(d.periodo.ant_fim) + '). Atualizado em ' + d.gerado_em.slice(8, 10) + '/' + d.gerado_em.slice(5, 7) + ' às ' + d.gerado_em.slice(11, 16) + '.';
+    redesenhar();
+    let t, largura = 0;
+    const raiz = document.querySelector('.mf');
+    new ResizeObserver(() => {
+      if (raiz.clientWidth === largura) return;
+      largura = raiz.clientWidth;
+      clearTimeout(t); t = setTimeout(redesenhar, 120);
+    }).observe(raiz);
+  }).catch(() => {
+    document.getElementById('meta-corpo').appendChild(el('div', 'mf-card mf-msg', 'Não foi possível carregar os dados.'));
+  });
+})();
+</script>
+</body>
+</html>

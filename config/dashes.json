@@ -1,0 +1,59 @@
+{
+  "fuso": "America/Sao_Paulo",
+  "dashes": [
+    {
+      "slug": "peugeot",
+      "nome": "CHAMPION PEUGEOT",
+      "meta_conta": "285287352481134",
+      "filtro_campanha": null,
+      "google_contas": ["635-169-2539"],
+      "nota_campanhas": "O pós-venda gera conversas no WhatsApp, e o Duelo das Marcas mede alcance e visitas ao perfil, não leads.",
+      "nota_conversoes": "As conversões contam ligações pelo anúncio e o formulário do site, como a conta está configurada."
+    },
+    {
+      "slug": "leapmotor",
+      "nome": "CHAMPION LEAPMOTOR",
+      "meta_conta": "802073125557865",
+      "filtro_campanha": null,
+      "google_contas": ["224-192-5535"],
+      "nota_campanhas": "Campanhas que não buscam formulário, como alcance ou mensagens, aparecem sem leads.",
+      "nota_conversoes": "As conversões são as que a conta do Google Ads registra."
+    },
+    {
+      "slug": "citroen",
+      "nome": "CHAMPION CITROËN",
+      "meta_conta": "550242472294026",
+      "filtro_campanha": null,
+      "google_contas": ["557-368-0197"],
+      "nota_campanhas": "Campanhas que não buscam formulário, como alcance ou mensagens, aparecem sem leads.",
+      "nota_conversoes": "As conversões são as que a conta do Google Ads registra."
+    },
+    {
+      "slug": "volvo",
+      "nome": "CHAMPION VOLVO",
+      "meta_conta": "271976313905865",
+      "filtro_campanha": {"operador": "NOT_CONTAIN", "texto": "PREMIUM"},
+      "google_contas": ["423-847-2749", "229-067-5049"],
+      "nota_campanhas": "Não inclui as campanhas da Seminovos Premium (com PREMIUM no nome), que têm relatório próprio.",
+      "nota_conversoes": "Soma as contas Volvo DF e Volvo GO. As conversões são as que a conta do Google Ads registra."
+    },
+    {
+      "slug": "seminovos-premium",
+      "nome": "CHAMPION SEMINOVOS PREMIUM",
+      "meta_conta": "271976313905865",
+      "filtro_campanha": {"operador": "CONTAIN", "texto": "PREMIUM"},
+      "google_contas": [],
+      "nota_campanhas": "Só as campanhas com PREMIUM no nome, dentro da conta Meta da Volvo.",
+      "nota_conversoes": ""
+    },
+    {
+      "slug": "seminovos",
+      "nome": "CHAMPION SEMINOVOS",
+      "meta_conta": "1046122710097086",
+      "filtro_campanha": null,
+      "google_contas": [],
+      "nota_campanhas": "Campanhas que não buscam formulário, como alcance ou mensagens, aparecem sem leads.",
+      "nota_conversoes": ""
+    }
+  ]
+}
