@@ -24,7 +24,12 @@ O período é sempre do dia 1º até hoje, comparado aos mesmos dias antes do di
 ## Configuração (uma vez)
 
 1. **Pages:** em Settings › Pages, em "Source", escolher **GitHub Actions**.
-2. **Token do Meta:** no Gerenciador de Negócios, em Usuários › Usuários do sistema, criar um usuário do sistema, dar acesso de leitura às contas de anúncio da Champion (Peugeot, Leapmotor, Citroën, Volvo e Seminovos) e gerar um token com a permissão `ads_read`. Colar em Settings › Secrets and variables › Actions › New repository secret, com o nome `META_TOKEN`.
+2. **Tokens do Meta:** um usuário do sistema em cada portfólio da Champion, com acesso de leitura às contas e um token com `ads_read`. Cada token vai em Settings › Secrets and variables › Actions › New repository secret:
+   - `META_TOKEN_PEUGEOT`: portfólio Champion Peugeot (contas Peugeot e Seminovos)
+   - `META_TOKEN_LEAPMOTOR`: portfólio Champion Leapmotor
+   - `META_TOKEN_CITROEN`: portfólio Champion Citroen
+   - `META_TOKEN_VOLVO`: portfólio Champion Volvo (dashes Volvo e Seminovos Premium)
+   - Um único `META_TOKEN` com acesso a todas as contas também serve, para qualquer dash sem o seu.
 3. **Google Ads:** criar um token "fine-grained" do GitHub só para este repositório, com Contents: Read and write. Colar no `script-mcc.js` (campo `GITHUB.token`), colar o script em Ferramentas › Scripts da MCC 310-237-5772, autorizar, executar uma vez e programar de hora em hora.
 4. **Primeira atualização:** em Actions › Atualizar dashes › Run workflow.
 

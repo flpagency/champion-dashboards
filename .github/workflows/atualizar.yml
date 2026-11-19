@@ -27,6 +27,10 @@ jobs:
       - name: Buscar Meta e montar o site
         env:
           META_TOKEN: ${{ secrets.META_TOKEN }}
+          META_TOKEN_PEUGEOT: ${{ secrets.META_TOKEN_PEUGEOT }}
+          META_TOKEN_LEAPMOTOR: ${{ secrets.META_TOKEN_LEAPMOTOR }}
+          META_TOKEN_CITROEN: ${{ secrets.META_TOKEN_CITROEN }}
+          META_TOKEN_VOLVO: ${{ secrets.META_TOKEN_VOLVO }}
         run: python scripts/montar.py
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

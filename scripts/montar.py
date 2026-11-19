@@ -188,7 +188,8 @@ def juntar_google(d, google):
 
 def main():
     cfg = json.load(open(os.path.join(RAIZ, 'config', 'dashes.json'), encoding='utf-8'))
-    token = os.environ.get('META_TOKEN', '').strip()
+    geral = os.environ.get('META_TOKEN', '').strip()
+    algum_token = False
     agora = agora_local(cfg.get('fuso', 'America/Sao_Paulo'))
     hoje = agora.date()
     inicio = hoje.replace(day=1)
@@ -211,9 +212,12 @@ def main():
     for d in cfg['dashes']:
         saida = {'slug': d['slug'], 'nome': d['nome'], 'gerado_em': agora.strftime('%Y-%m-%dT%H:%M'), 'periodo': periodo,
                  'notas': {'campanhas': d.get('nota_campanhas', ''), 'conversoes': d.get('nota_conversoes', '')}}
+        nome_token = d.get('meta_token') or 'META_TOKEN'
+        token = os.environ.get(nome_token, '').strip() or geral
+        algum_token = algum_token or bool(token)
         try:
             if not token:
-                raise RuntimeError('META_TOKEN não configurado')
+                raise RuntimeError(nome_token + ' não configurado')
             saida['meta'] = coletar_meta(d, periodo, token)
         except Exception as e:
             falhas += 1
@@ -228,7 +232,7 @@ def main():
         print('ok', d['slug'])
     open(os.path.join(site, 'index.html'), 'w', encoding='utf-8').write(hub.replace('{{ITENS}}', '\n'.join(itens)))
     open(os.path.join(site, '.nojekyll'), 'w').close()
-    if falhas == len(cfg['dashes']) and token:
+    if falhas == len(cfg['dashes']) and algum_token:
         sys.exit('O Meta falhou em todos os dashes.')
 
 
